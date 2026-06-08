@@ -1,94 +1,98 @@
 # CLAUDE.md
 
-Guidance for AI assistants (Claude Code and others) working in this repository.
+Настанови для ШІ-асистентів (Claude Code та інших), які працюють у цьому репозиторії.
 
-## Project status: early / scaffolding stage
+## Статус проєкту: рання стадія / каркас
 
-`AI-System-Hub` is at the very beginning of its life. As of this writing the
-repository contains only:
+`AI-System-Hub` перебуває на самому початку свого життєвого циклу. Станом на
+момент написання репозиторій містить лише:
 
-- `README.md` — a title placeholder.
-- `.gitignore` — the standard template for **AL projects targeting Microsoft
+- `README.md` — заголовок-заглушка.
+- `.gitignore` — стандартний шаблон для **AL-проєктів під Microsoft
   Dynamics 365 Business Central**.
-- `CLAUDE.md` — this file.
+- `CLAUDE.md` — цей файл.
 
-There is **no application source code, build configuration, dependency manifest,
-or test suite yet.** Do not assume a structure that is not present on disk.
-Before acting on any instruction in this document, verify it still matches the
-working tree — this file describes intent and conventions as much as current
-reality, and the codebase will outgrow it quickly.
+Тут **ще немає вихідного коду застосунку, конфігурації збірки, маніфесту
+залежностей чи набору тестів.** Не припускайте наявності структури, якої немає
+на диску. Перш ніж діяти за будь-якою інструкцією з цього документа, перевірте,
+чи вона досі відповідає робочому дереву — цей файл описує наміри та домовленості
+не менше, ніж поточну реальність, а кодова база швидко його переросте.
 
-## What the tooling tells us
+## Що нам підказує інструментарій
 
-The `.gitignore` is the canonical AL / Business Central template. It ignores
-artifacts produced by the AL Language extension and the BC toolchain:
+`.gitignore` — це канонічний шаблон AL / Business Central. Він ігнорує
+артефакти, які створює розширення AL Language та інструментарій BC:
 
 - `.vscode/`, `.alcache/`, `.alpackages/`, `.snapshots/`, `.output/`
-- Compiled extensions: `*.app`
-- RAD and translation artifacts: `rad.json`, `*.g.xlf`
-- License files: `*.bclicense`, `*.flf`
-- Test output: `TestResults.xml`
+- Скомпільовані розширення: `*.app`
+- Артефакти RAD і перекладів: `rad.json`, `*.g.xlf`
+- Файли ліцензій: `*.bclicense`, `*.flf`
+- Результати тестів: `TestResults.xml`
 
-This strongly implies the project is intended to be a **Business Central
-extension written in AL** (Application Language), developed in VS Code with the
-AL Language extension. Treat that as the working assumption until code lands
-that contradicts it.
+Це переконливо вказує на те, що проєкт задумано як **розширення Business Central,
+написане мовою AL** (Application Language), яке розробляють у VS Code з
+розширенням AL Language. Вважайте це робочим припущенням, доки не з'явиться код,
+що йому суперечить.
 
-> If the project pivots to a different stack, update this file in the same
-> change that introduces the new tooling.
+> Якщо проєкт перейде на інший стек, оновіть цей файл у тій самій зміні, що
+> вводить новий інструментарій.
 
-## Expected layout (AL / Business Central convention)
+## Очікувана структура (домовленість AL / Business Central)
 
-When AL code is added, follow the standard Business Central project layout so
-the AL compiler and `app.json` resolve sources correctly:
+Коли буде додано AL-код, дотримуйтесь стандартної структури проєкту Business
+Central, щоб компілятор AL та `app.json` правильно розв'язували джерела:
 
-- `app.json` — extension manifest (id, publisher, version, id ranges,
-  dependencies, platform/application versions). Required at the repo root for an
-  AL app.
-- `*.al` source files — typically grouped by object type or feature, e.g.
-  `src/`, with subfolders such as `Tables/`, `Pages/`, `Codeunits/`,
+- `app.json` — маніфест розширення (id, видавець, версія, діапазони id,
+  залежності, версії платформи/застосунку). Обов'язковий у корені репозиторію
+  для AL-застосунку.
+- `*.al` — файли вихідного коду, зазвичай згруповані за типом об'єкта чи
+  функціональністю, напр. `src/` з підтеками `Tables/`, `Pages/`, `Codeunits/`,
   `Reports/`, `Enums/`, `PermissionSets/`.
-- `Translations/` — `*.xlf` translation files (`*.g.xlf` is generated and
-  git-ignored).
-- `.vscode/launch.json` — sandbox/server launch config (git-ignored; do not
-  commit environment-specific endpoints or credentials).
+- `Translations/` — файли перекладів `*.xlf` (`*.g.xlf` генерується і
+  ігнорується git).
+- `.vscode/launch.json` — конфігурація запуску пісочниці/сервера (ігнорується
+  git; не комітьте специфічні для середовища кінцеві точки чи облікові дані).
 
-Object names and IDs must fall within the `idRanges` declared in `app.json`.
-Confirm the assigned ranges before creating new objects.
+Імена та id об'єктів мають належати до діапазонів `idRanges`, оголошених у
+`app.json`. Перевіряйте призначені діапазони, перш ніж створювати нові об'єкти.
 
-## Development workflow
+## Процес розробки
 
-The toolchain is not yet committed, so there is no project-defined build or test
-command to run. Once the AL project exists, the normal flow is:
+Інструментарій ще не закомічено, тому немає визначеної проєктом команди збірки
+чи тестування. Щойно AL-проєкт з'явиться, звичний процес такий:
 
-1. Open the folder in VS Code with the **AL Language** extension installed.
-2. Maintain `app.json` (and `.vscode/launch.json`) for the target BC
-   environment (sandbox / on-prem / cloud).
-3. Build with **AL: Package** (`Ctrl+Shift+B`) to produce the `*.app`.
-4. Deploy/run with **AL: Publish** (`F5`) against the configured environment.
-5. Run AL test codeunits via the test runner / `AL: Run Tests`.
+1. Відкрийте теку у VS Code зі встановленим розширенням **AL Language**.
+2. Підтримуйте `app.json` (і `.vscode/launch.json`) для цільового середовища BC
+   (пісочниця / on-prem / хмара).
+3. Збирайте через **AL: Package** (`Ctrl+Shift+B`), щоб отримати `*.app`.
+4. Розгортайте/запускайте через **AL: Publish** (`F5`) у налаштованому
+   середовищі.
+5. Запускайте тестові codeunit-и AL через тест-раннер / `AL: Run Tests`.
 
-If and when CI, scripts, or a different stack are introduced, document the exact
-commands here and prefer them over the manual steps above.
+Якщо і коли з'являться CI, скрипти чи інший стек, задокументуйте точні команди
+тут і надавайте їм перевагу над ручними кроками вище.
 
-## Conventions for AI assistants
+## Домовленості для ШІ-асистентів
 
-- **Do not fabricate structure.** This is a near-empty repo. Inspect the actual
-  files before claiming anything exists. Keep generated/ignored artifacts
-  (`.app`, `.alcache/`, `.alpackages/`, `*.g.xlf`, license files) out of commits.
-- **Respect `.gitignore`.** Never force-add ignored build output, snapshots, or
-  license files (`*.bclicense`, `*.flf`).
-- **Never commit secrets or credentials** — including BC environment endpoints,
-  service-to-service auth, or license files.
-- **Keep this file current.** When you add the first real code, build config, or
-  tests, expand the relevant sections above with concrete paths and commands in
-  the same change.
-- **Match surrounding style.** Once AL (or other) code exists, mirror its naming,
-  object-ID ranges, and formatting rather than importing outside conventions.
+- **Не вигадуйте структуру.** Це майже порожній репозиторій. Перевіряйте
+  фактичні файли, перш ніж стверджувати, що щось існує. Тримайте
+  згенеровані/ігноровані артефакти (`.app`, `.alcache/`, `.alpackages/`,
+  `*.g.xlf`, файли ліцензій) поза комітами.
+- **Поважайте `.gitignore`.** Ніколи не додавайте примусово ігнорований вивід
+  збірки, знімки чи файли ліцензій (`*.bclicense`, `*.flf`).
+- **Ніколи не комітьте секрети чи облікові дані** — включно з кінцевими точками
+  середовища BC, авторизацією service-to-service чи файлами ліцензій.
+- **Тримайте цей файл актуальним.** Коли додасте перший реальний код,
+  конфігурацію збірки чи тести, розширте відповідні розділи вище конкретними
+  шляхами та командами в тій самій зміні.
+- **Дотримуйтесь стилю довкола.** Щойно з'явиться AL- (чи інший) код,
+  наслідуйте його іменування, діапазони id об'єктів та форматування, а не
+  привносьте сторонні домовленості.
 
-## Git workflow
+## Робота з git
 
-- `master` is the default branch.
-- Active development for this task is on `claude/claude-md-docs-q0vpih`.
-- Make focused commits with clear, descriptive messages. Open pull requests as
-  drafts against `master`.
+- `master` — гілка за замовчуванням.
+- Активна розробка для цього завдання ведеться у гілці
+  `claude/claude-md-docs-q0vpih`.
+- Робіть сфокусовані коміти з чіткими, описовими повідомленнями. Відкривайте
+  pull request-и як чернетки (draft) проти `master`.
