@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="uk">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AI-System-Hub · Мета-агент</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand">
+        <span class="logo">🧠</span>
+        <div>
+          <h1>AI-System-Hub</h1>
+          <p class="subtitle">Мета-агент, що створює та керує під-агентами</p>
+        </div>
+      </div>
+      <div id="status" class="status">…</div>
+    </header>
+
+    <main class="layout">
+      <!-- Ліва колонка: створення та список агентів -->
+      <section class="sidebar">
+        <div class="card">
+          <h2>Створити агента</h2>
+          <p class="hint">
+            Опиши, кого створити — мета-агент сам спроєктує персону, промпт і мету.
+          </p>
+          <textarea
+            id="instruction"
+            rows="3"
+            placeholder="Напр.: блогер, що веде канал про подорожі Карпатами"
+          ></textarea>
+          <button id="spawn" class="primary">✨ Спроєктувати й створити</button>
+        </div>
+
+        <div class="card">
+          <h2>Агенти <span id="count" class="badge">0</span></h2>
+          <ul id="agents" class="agent-list"></ul>
+        </div>
+      </section>
+
+      <!-- Права колонка: чат з обраним агентом -->
+      <section class="chat">
+        <div id="chatHeader" class="chat-header empty">
+          Обери або створи агента ліворуч
+        </div>
+        <div id="messages" class="messages"></div>
+        <form id="chatForm" class="chat-input" hidden>
+          <input id="message" type="text" placeholder="Напиши агенту…" autocomplete="off" />
+          <button type="submit" class="primary">➤</button>
+        </form>
+      </section>
+    </main>
+
+    <script src="/app.js"></script>
+  </body>
+</html>
