@@ -99,14 +99,21 @@ function selectAgent(id) {
   const header = $("#chatHeader");
   header.className = "chat-header";
   header.innerHTML = `
-    <button class="del" title="Видалити">✕ видалити</button>
-    ${emojiFor(agent.persona)} ${escapeHtml(agent.name)}
+    <div class="row">
+      <button class="back-btn" title="До списку агентів">← Агенти</button>
+      <span>${emojiFor(agent.persona)} ${escapeHtml(agent.name)}</span>
+      <button class="del" title="Видалити">✕ видалити</button>
+    </div>
     <div class="meta">${escapeHtml(agent.role || "")} · мета: ${escapeHtml(agent.goal || "")}</div>`;
   header.querySelector(".del").onclick = () => removeAgent(id);
+  header.querySelector(".back-btn").onclick = () =>
+    document.body.classList.remove("view-chat");
 
   renderMessages(agent.conversation || []);
   $("#chatForm").hidden = false;
-  $("#message").focus();
+  // На мобільному перемикаємося на екран чату.
+  document.body.classList.add("view-chat");
+  if (window.matchMedia("(min-width: 761px)").matches) $("#message").focus();
 }
 
 function renderMessages(conversation) {
@@ -171,6 +178,7 @@ async function removeAgent(id) {
     const header = $("#chatHeader");
     header.className = "chat-header empty";
     header.textContent = "Обери або створи агента ліворуч";
+    document.body.classList.remove("view-chat");
   }
   loadAgents();
 }

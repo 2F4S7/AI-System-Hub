@@ -14,20 +14,28 @@
   box-sizing: border-box;
 }
 
+html,
+body {
+  height: 100%;
+}
+
 body {
   margin: 0;
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   background: var(--bg);
   color: var(--text);
-  height: 100vh;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 .topbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 12px;
   padding: 12px 20px;
   border-bottom: 1px solid var(--border);
   background: var(--panel);
@@ -37,6 +45,7 @@ body {
   display: flex;
   align-items: center;
   gap: 12px;
+  min-width: 0;
 }
 
 .logo {
@@ -46,6 +55,7 @@ body {
 .topbar h1 {
   margin: 0;
   font-size: 18px;
+  white-space: nowrap;
 }
 
 .subtitle {
@@ -60,6 +70,7 @@ body {
   border: 1px solid var(--border);
   border-radius: 999px;
   padding: 4px 12px;
+  white-space: nowrap;
 }
 
 .status.mock {
@@ -75,7 +86,8 @@ body {
 .layout {
   flex: 1;
   display: grid;
-  grid-template-columns: 360px 1fr;
+  grid-template-columns: 340px 1fr;
+  min-height: 0;
   overflow: hidden;
 }
 
@@ -118,6 +130,7 @@ input[type="text"] {
   color: var(--text);
   padding: 10px;
   font: inherit;
+  font-size: 16px; /* ≥16px — щоб iOS не зумив поле при фокусі */
   resize: vertical;
 }
 
@@ -129,6 +142,7 @@ button {
   padding: 10px 14px;
   background: var(--panel-2);
   color: var(--text);
+  -webkit-tap-highlight-color: transparent;
 }
 
 button.primary {
@@ -217,6 +231,7 @@ button:disabled {
 .chat {
   display: flex;
   flex-direction: column;
+  min-height: 0;
   overflow: hidden;
 }
 
@@ -239,16 +254,32 @@ button:disabled {
   margin-top: 2px;
 }
 
+.chat-header .row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.back-btn {
+  display: none;
+  background: var(--panel-2);
+  padding: 6px 10px;
+  font-size: 13px;
+  flex: none;
+}
+
 .del {
-  float: right;
+  margin-left: auto;
   background: transparent;
   color: var(--danger);
-  padding: 2px 8px;
+  padding: 4px 8px;
+  flex: none;
 }
 
 .messages {
   flex: 1;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   padding: 18px;
   display: flex;
   flex-direction: column;
@@ -260,6 +291,8 @@ button:disabled {
   padding: 10px 14px;
   border-radius: 12px;
   white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-wrap: anywhere;
   line-height: 1.45;
   font-size: 14px;
 }
@@ -281,6 +314,7 @@ button:disabled {
   padding: 14px 18px;
   border-top: 1px solid var(--border);
   background: var(--panel);
+  padding-bottom: calc(14px + env(safe-area-inset-bottom, 0px));
 }
 
 .chat-input input {
@@ -289,10 +323,67 @@ button:disabled {
 
 .chat-input button {
   width: 52px;
+  flex: none;
 }
 
 .empty-msg {
   color: var(--muted);
   text-align: center;
   margin-top: 40px;
+  padding: 0 16px;
+}
+
+/* --- Планшет: трохи вужча бічна панель --- */
+@media (max-width: 1024px) {
+  .layout {
+    grid-template-columns: 300px 1fr;
+  }
+}
+
+/* --- Телефон / вузькі екрани: одна колонка з перемиканням список ⇄ чат --- */
+@media (max-width: 760px) {
+  .topbar {
+    padding: 10px 14px;
+  }
+
+  .subtitle {
+    display: none;
+  }
+
+  .topbar h1 {
+    font-size: 16px;
+  }
+
+  .layout {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    border-right: none;
+    padding: 14px;
+  }
+
+  /* За замовчуванням на мобільному видно список агентів. */
+  .chat {
+    display: none;
+  }
+
+  /* Коли обрано агента — показуємо чат на весь екран, список ховаємо. */
+  body.view-chat .sidebar {
+    display: none;
+  }
+
+  body.view-chat .chat {
+    display: flex;
+  }
+
+  .back-btn {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .msg {
+    max-width: 88%;
+    font-size: 15px;
+  }
 }
